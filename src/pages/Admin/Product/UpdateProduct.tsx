@@ -17,12 +17,12 @@ const normFile = (e: any) => {
   return e?.fileList;
 };
 
-interface AddProductProps extends IOnUpdate {
+interface UpdateProductProps extends IOnUpdate {
   product: IProduct;
   category: ICategory;
 }
 
-const UpdateProduct: React.FC<AddProductProps> = ({
+const UpdateProduct: React.FC<UpdateProductProps> = ({
   category,
   onUpdate,
   product,
@@ -62,7 +62,7 @@ const UpdateProduct: React.FC<AddProductProps> = ({
   };
 
   return (
-    <div>
+    <div style={{ display: "flex", justifyContent: "center", height: "100vh" }}>
       <Form
         form={form}
         labelCol={{ span: 4 }}

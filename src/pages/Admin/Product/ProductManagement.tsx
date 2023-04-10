@@ -1,8 +1,8 @@
-import React from "react";
-import { Space, Table, Tag, Button } from "antd";
+import React, { useState } from "react";
+import { Space, Table, Tag, Button, Input } from "antd";
 import type { ColumnsType } from "antd/es/table";
-import { Link, NavLink } from "react-router-dom";
-import { IProduct } from "../../types/products";
+import { Form, Link, NavLink } from "react-router-dom";
+import { IProduct } from "../../../types/products";
 
 interface DataType {
   key: string | number;
@@ -20,6 +20,8 @@ interface Iprops {
 }
 
 const ProductManagement = (props: Iprops) => {
+  const [searchText, setSearchText] = useState("");
+  
   const columns: ColumnsType<DataType> = [
     {
       title: "Name",
@@ -88,8 +90,28 @@ const ProductManagement = (props: Iprops) => {
       };
     });
 
+    const filteredData = Array.isArray(data) && data.filter((item) =>
+    item.name.toLowerCase().includes(searchText.toLowerCase())
+  );
+
   return (
-    <Table columns={columns} dataSource={data} pagination={{ pageSize: 3 }} />
+    <>
+      <div style={{ marginBottom: "10px", display: "flex" }}>
+        <Button type="primary">
+          <Link to={`/admin/products/add`}>Add Product</Link>
+        </Button>
+        <Input
+          placeholder="Search by name"
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+          style={{ marginLeft: "10px", width: 200 }}
+        />
+        <Button type="primary" style={{ marginLeft: "10px" }}>
+          Search
+        </Button>
+      </div>
+      <Table columns={columns} dataSource={filteredData} pagination={{ pageSize: 3 }} />
+    </>
   );
 };
 

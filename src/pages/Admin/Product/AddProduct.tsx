@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { InboxOutlined, UploadOutlined } from "@ant-design/icons";
 import { Button, Form, Input, InputNumber, Select, Upload } from "antd";
-import { IProduct } from "../../types/products";
-import { IOnAdd } from "../../types/handle";
-import { ICategory } from "../../types/categorys";
+import { IProduct } from "../../../types/products";
+import { IOnAdd } from "../../../types/handle";
+import { ICategory } from "../../../types/categorys";
 
 const { Option } = Select;
 
@@ -31,14 +31,14 @@ const AddProduct: React.FC<AddProductProps> = ({onAdd,category}) => {
     console.log("Failed:", errorInfo);
   };
   return (
-    <div>
+    <div style={{ display: "flex", justifyContent: "center", height: "100vh" }}>
       <Form
         labelCol={{ span: 4 }}
         wrapperCol={{ span: 14 }}
         layout="horizontal"
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
-        style={{ width: 800 }}
+        style={{ width: 800}}
       >
         <Form.Item
           name="name"

@@ -9,16 +9,29 @@ import ProductPage from "./pages/Client/ProductPage";
 import ProductDetails from "./pages/Client/ProductDetails";
 import AdminLayout from "./pages/Layout/AdminLayout";
 import DashBoard from "./pages/Admin/DashBoard";
-import AddProduct from "./pages/Admin/AddProduct";
-import { createProduct, getAllProduct, removeProduct, updateProduct } from "./api/products";
+import AddProduct from "./pages/Admin/Product/AddProduct";
+import {
+  createProduct,
+  getAllProduct,
+  removeProduct,
+  updateProduct,
+} from "./api/products";
 import Login from "./pages/Client/Login";
 import { IProduct } from "./types/products";
 import { ICategory } from "./types/categorys";
-import { getAllCategory } from "./api/categorys";
-import ProductManagement from "./pages/Admin/ProductManagement";
+import {
+  createCategory,
+  getAllCategory,
+  removeCategory,
+  updateCategory,
+} from "./api/categorys";
+import ProductManagement from "./pages/Admin/Product/ProductManagement";
 import Swal from "sweetalert2";
-import UpdateProduct from "./pages/Admin/UpdateProduct";
+import UpdateProduct from "./pages/Admin/Product/UpdateProduct";
 import Register from "./pages/Client/Register";
+import CategoryManagement from "./pages/Admin/Category/CategoryManagement";
+import AddCategory from "./pages/Admin/Category/AddCategory";
+import UpdateCategory from "./pages/Admin/Category/UpdateCategory";
 function App() {
   const [products, setProducts] = useState<IProduct[]>([]);
   const [categoris, setCategoris] = useState<ICategory[]>([]);
@@ -34,39 +47,114 @@ function App() {
 
   /* Add Product */
   const onHandleAdd = (product: IProduct) => {
-    createProduct(product).then(() =>
-      getAllProduct().then(({ data }) => setProducts(data))
-    );
+    createProduct(product)
+      .then(() => Swal.fire("Good job!", "You clicked the button!", "success"))
+      .then(() => getAllProduct().then(({ data }) => setProducts(data)));
   };
   /* end Add Product */
 
   /* remove product */
-  const onHandleRemove = (id: number | string) => {
-    removeProduct(id)
-      .then(() =>
-        Swal.fire("Xóa thành công!", "You clicked the button!", "success")
-      )
-      .then(() => setProducts(products.filter((product) => product._id != id)));
+  const onHandleRemove = async (id: number | string) => {
+    const data = await products.docs.filter((product) => product._id != id);
+
+    Swal.fire({
+      title: "Bạn chắn chắn muốn xóa chứ?",
+      showDenyButton: true,
+      confirmButtonText: "Xóa",
+      denyButtonText: `Hủy`,
+    }).then((result) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+        Swal.fire("Saved!", "", "success").then(() =>
+          removeProduct(id)
+            .then(() => setProducts(data))
+            .then(() => getAllProduct().then(({ data }) => setProducts(data)))
+        );
+      } else if (result.isDenied) {
+        Swal.fire("Bạn đã hủy !", "", "info");
+      }
+    });
   };
-  /* end remove */
+  /* end remove product*/
+
   //call api category
   useEffect(() => {
     getAllCategory().then(({ data }) => setCategoris(data));
   }, []);
-  //end call
+  //end call category
 
   /*update product */
 
-  const onHandleUpdate = (product:IProduct)=>{
-    updateProduct(product).then(()=> getAllProduct().then(({data})=> setProducts(data)))
-  }
+  const onHandleUpdate = (product: IProduct) => {
+    updateProduct(product).then(() =>
+      getAllProduct().then(({ data }) => setProducts(data))
+    );
+  };
+
+  //end update product
+
+  // update category
+  const onHandleUpdateCate = (category: ICategory) => {
+    Swal.fire({
+      title: "Bạn chắn chắn muốn update chứ?",
+      showDenyButton: true,
+      confirmButtonText: "Update",
+      denyButtonText: `Hủy`,
+    }).then((result) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+        Swal.fire("Saved!", "", "success").then(() =>
+          updateCategory(category).then(() =>
+            getAllCategory().then(({ data }) => setCategoris(data))
+          )
+        );
+      } else if (result.isDenied) {
+        Swal.fire("Bạn đã hủy !", "", "info");
+      }
+    });
+  };
+  // end update category
+
+  // remove category
+  const onHandleRemoveCategory = async (id: number | string) => {
+    const data = await categoris.filter((cate) => cate._id != id);
+
+    Swal.fire({
+      title: "Bạn chắn chắn muốn xóa chứ?",
+      showDenyButton: true,
+      confirmButtonText: "Xóa",
+      denyButtonText: `Hủy`,
+    }).then((result) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+        Swal.fire("Saved!", "", "success").then(() =>
+          removeCategory(id)
+            .then(() => setCategoris(data))
+            .then(() => getAllCategory().then(({ data }) => setCategoris(data)))
+        );
+      } else if (result.isDenied) {
+        Swal.fire("Bạn đã hủy !", "", "info");
+      }
+    });
+  };
+
+  // end remove cate
+
+  // add cate
+  const onHandleAddCate = (category: ICategory) => {
+    createCategory(category).then(() =>
+      getAllCategory().then(({ data }) => setCategoris(data))
+    );
+  };
+
+  // end cate
   return (
     <div className="App">
       <Routes>
         <Route path="/" element={<ClientLayout />}>
           <Route index element={<HomePage />} />
           <Route path="login" element={<Login />} />
-          <Route path="register" element={<Register />} /> 
+          <Route path="register" element={<Register />} />
           <Route path="products">
             <Route index element={<ProductPage />} />
             <Route path=":id" element={<ProductDetails />} />
@@ -89,8 +177,42 @@ function App() {
               path="add"
               element={<AddProduct category={categoris} onAdd={onHandleAdd} />}
             />
-            <Route path=":id" element={<UpdateProduct category={categoris} onUpdate={onHandleUpdate} product={products}/>}/>
+            <Route
+              path=":id"
+              element={
+                <UpdateProduct
+                  category={categoris}
+                  onUpdate={onHandleUpdate}
+                  product={products}
+                />
+              }
+            />
           </Route>
+          <Route path="categorys">
+            <Route
+              index
+              element={
+                <CategoryManagement
+                  onRemove={onHandleRemoveCategory}
+                  categoris={categoris}
+                />
+              }
+            />
+            <Route
+              path="add"
+              element={<AddCategory onAddCate={onHandleAddCate} />}
+            />
+            <Route
+              path=":id"
+              element={
+                <UpdateCategory
+                  categoris={categoris}
+                  onUpdateCate={onHandleUpdateCate}
+                />
+              }
+            />
+          </Route>
+
         </Route>
       </Routes>
     </div>
