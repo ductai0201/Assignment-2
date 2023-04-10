@@ -1,0 +1,3 @@
+- CRUD Category, Product
+- Search theo tên 
+- Login, Register
