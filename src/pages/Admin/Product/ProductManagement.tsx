@@ -3,6 +3,7 @@ import { Space, Table, Tag, Button, Input } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { Form, Link, NavLink } from "react-router-dom";
 import { IProduct } from "../../../types/products";
+import { getAllCategory } from "../../../api/categorys";
 
 interface DataType {
   key: string | number;
@@ -21,7 +22,7 @@ interface Iprops {
 
 const ProductManagement = (props: Iprops) => {
   const [searchText, setSearchText] = useState("");
-  
+
   const columns: ColumnsType<DataType> = [
     {
       title: "Name",
@@ -79,20 +80,25 @@ const ProductManagement = (props: Iprops) => {
   const data: DataType[] =
     Array.isArray(props.products.docs) &&
     props.products.docs.map((item: IProduct) => {
+      const dataCate = props.categoris.map((cate) => cate);
+      const findData = dataCate.find((data) => data._id == item.categoryId);
+      const nameCate = findData ? findData.name : ""
       return {
         key: item._id,
         name: item.name,
         price: item.price,
         description: item.description,
-        categoryId: item.categoryId,
+        categoryId: nameCate,
         createdAt: item.createdAt,
         image: item.image,
       };
     });
 
-    const filteredData = Array.isArray(data) && data.filter((item) =>
-    item.name.toLowerCase().includes(searchText.toLowerCase())
-  );
+  const filteredData =
+    Array.isArray(data) &&
+    data.filter((item) =>
+      item.name.toLowerCase().includes(searchText.toLowerCase())
+    );
 
   return (
     <>
@@ -110,7 +116,11 @@ const ProductManagement = (props: Iprops) => {
           Search
         </Button>
       </div>
-      <Table columns={columns} dataSource={filteredData} pagination={{ pageSize: 3 }} />
+      <Table
+        columns={columns}
+        dataSource={filteredData}
+        pagination={{ pageSize: 3 }}
+      />
     </>
   );
 };

@@ -11,6 +11,7 @@ interface DataType {
   createdAt: string;
 }
 
+
 const CategoryManagement = (props: ICategory) => {
   console.log(props);
   

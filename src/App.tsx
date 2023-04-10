@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import ClientLayout from "./pages/Layout/ClientLayout";
 import HomePage from "./pages/Client/HomePage";
 import ProductPage from "./pages/Client/ProductPage";
@@ -32,6 +32,8 @@ import Register from "./pages/Client/Register";
 import CategoryManagement from "./pages/Admin/Category/CategoryManagement";
 import AddCategory from "./pages/Admin/Category/AddCategory";
 import UpdateCategory from "./pages/Admin/Category/UpdateCategory";
+import { IRegister } from "./types/user";
+import { register } from "./api/auth";
 function App() {
   const [products, setProducts] = useState<IProduct[]>([]);
   const [categoris, setCategoris] = useState<ICategory[]>([]);
@@ -148,13 +150,34 @@ function App() {
   };
 
   // end cate
+
+  // resgister add
+  const onHandleAddRegister = (user: IRegister) => {
+    register(user).then(() =>
+      Swal.fire("Good job!", "You clicked the button!", "success")
+    );
+  };
+  // end register
+
+  // function requireAdminRole() {
+  //    const { data: {user: {role} } } = JSON.parse(localStorage.getItem('_user')!) ;
+  //   const navigate = useNavigate();
+  //   if (role !== 'admin') {
+  //     navigate('/login', { replace: true });
+  //   }
+  // }
+  // check role
   return (
     <div className="App">
+      
       <Routes>
         <Route path="/" element={<ClientLayout />}>
           <Route index element={<HomePage />} />
           <Route path="login" element={<Login />} />
-          <Route path="register" element={<Register />} />
+          <Route
+            path="register"
+            element={<Register onAdd={onHandleAddRegister} />}
+          />
           <Route path="products">
             <Route index element={<ProductPage />} />
             <Route path=":id" element={<ProductDetails />} />
@@ -170,6 +193,7 @@ function App() {
                 <ProductManagement
                   onRemove={onHandleRemove}
                   products={products}
+                  categoris={categoris}
                 />
               }
             />
@@ -212,7 +236,7 @@ function App() {
               }
             />
           </Route>
-
+        
         </Route>
       </Routes>
     </div>

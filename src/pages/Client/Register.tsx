@@ -2,21 +2,17 @@ import React, { useState } from "react";
 import { Button, Checkbox, Form, Input } from "antd";
 import { IRegister } from "../../types/user";
 import { useForm } from "react-hook-form";
-const Register = () => {
-  const { register, handleSubmit,watch } = useForm();
+const Register = (props:IRegister) => {
+  console.log(props);
+  const onSubmit = (values)=>{ 
+    props.onAdd(values)
+  }
 
-  const onSubmit = (data) => {
-    console.log(data);
-  };
-
-  const password = watch("password", "");
-    console.log(password);
-    
 
   return (
     <div>
       <Form
-        onFinish={handleSubmit(onSubmit)}
+        onFinish={onSubmit}
         name="basic"
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 16 }}
@@ -34,7 +30,7 @@ const Register = () => {
             },
           ]}
         >
-          <Input {...register("name")}/>
+          <Input />
         </Form.Item>
 
         <Form.Item
@@ -48,7 +44,7 @@ const Register = () => {
             },
           ]}
         >
-          <Input {...register("email")}/>
+          <Input />
         </Form.Item>
 
         <Form.Item
@@ -56,21 +52,25 @@ const Register = () => {
           name="password"
           rules={[{ required: true, message: "Please input your password!" }]}
         >
-          <Input.Password {...register("password")}/>
+          <Input.Password />
         </Form.Item>
 
         <Form.Item
           label="Confirm Password"
           name="confirmPassword"
           rules={[
-            { required: true, message: "Please input your confirm password!" },
-            {
-              validator: (_, value) =>
-                value == password ? Promise.resolve() : Promise.reject(new Error("The two passwords do not match!")),
-            },
+            { required: true, message: "Please confirm your password!" },
+            ({ getFieldValue }) => ({
+              validator(_, value) {
+                if (!value || getFieldValue("password") === value) {
+                  return Promise.resolve();
+                }
+                return Promise.reject(new Error("Mật khẩu không khớp!"));
+              }
+            })
           ]}
         >
-          <Input.Password {...register("confirmPassword")}/>
+          <Input.Password />
         </Form.Item>
 
         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
