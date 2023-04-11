@@ -1,5 +1,0 @@
-- CRUD Category, Product
-- Search theo tên 
-- Login, Register
-- Validate
-- Confirm
