@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate, Outlet, Navigate } from "react-router-dom";
 import ClientLayout from "./pages/Layout/ClientLayout";
 import HomePage from "./pages/Client/HomePage";
 import ProductPage from "./pages/Client/ProductPage";
@@ -151,21 +151,14 @@ function App() {
 
   // end cate
 
-  // resgister add
-  const onHandleAddRegister = (user: IRegister) => {
-    register(user).then(() =>
-      Swal.fire("Good job!", "You clicked the button!", "success")
-    );
-  };
+
   // end register
 
-  // function requireAdminRole() {
-  //    const { data: {user: {role} } } = JSON.parse(localStorage.getItem('_user')!) ;
-  //   const navigate = useNavigate();
-  //   if (role !== 'admin') {
-  //     navigate('/login', { replace: true });
-  //   }
-  // }
+  function RequireAdminRole() {
+     const { data: {user: {role} } } = JSON.parse(localStorage.getItem('_user')!) ;
+    return role === 'admin' ? <Outlet /> : <Navigate to='/login' />
+  }
+
   // check role
   return (
     <div className="App">
@@ -176,17 +169,18 @@ function App() {
           <Route path="login" element={<Login />} />
           <Route
             path="register"
-            element={<Register onAdd={onHandleAddRegister} />}
+            element={<Register  />}
           />
           <Route path="products">
-            <Route index element={<ProductPage />} />
+            <Route index element={<ProductPage categoris={categoris} products={products}/>} />
             <Route path=":id" element={<ProductDetails />} />
           </Route>
         </Route>
 
-        <Route path="/admin" element={<AdminLayout />}>
+      <Route element={<RequireAdminRole />}>
+      <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<DashBoard />} />
-          <Route path="products">
+         <Route path="products">
             <Route
               index
               element={
@@ -236,8 +230,8 @@ function App() {
               }
             />
           </Route>
-        
         </Route>
+      </Route> 
       </Routes>
     </div>
   );

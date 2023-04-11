@@ -1,7 +1,7 @@
 import { IProduct } from "../types/products";
 import instance from "./instance";
 const {
-  data: { accessToken },
+  data: { accessToken }
 } = JSON.parse(localStorage.getItem("_user")!);
 
 export const getAllProduct = () => {

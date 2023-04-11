@@ -5,7 +5,9 @@ type Props = {};
 const ClientLayout = (props: Props) => {
   return (
     <>
-      <header>Header</header>
+      <header>
+        
+      </header>
       <main>
         <Outlet />
       </main>

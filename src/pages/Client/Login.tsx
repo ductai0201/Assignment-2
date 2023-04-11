@@ -2,12 +2,17 @@ import React from "react";
 import { Button, Checkbox, Form, Input } from "antd";
 import { login } from "../../api/auth";
 import { IUser } from "../../types/user";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+
+
 const Login = () => {
   
+  const navigate = useNavigate();
   const onFinish = async (values: IUser) => {
-    const user = await login(values);
-    console.log(user);
+    const user = await login(values)
     localStorage.setItem("_user", JSON.stringify(user));
+    navigate("/");
   };
 
   const onFinishFailed = (errorInfo: any) => {

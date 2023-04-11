@@ -112,9 +112,7 @@ const ProductManagement = (props: Iprops) => {
           onChange={(e) => setSearchText(e.target.value)}
           style={{ marginLeft: "10px", width: 200 }}
         />
-        <Button type="primary" style={{ marginLeft: "10px" }}>
-          Search
-        </Button>
+        
       </div>
       <Table
         columns={columns}

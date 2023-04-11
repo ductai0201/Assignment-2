@@ -16,7 +16,7 @@ import { Link, Outlet } from 'react-router-dom';
 const { Header, Content, Footer, Sider } = Layout;
 
 const items: MenuProps['items'] = [
-  {icon:UserOutlined,name:"User",link:"/admin/users"},
+  
   {icon:AppstoreOutlined,name:"Product",link:"/admin/products"},
   {icon:ShopOutlined,name:"Category",link:"/admin/categorys"},
 ].map((item, index) => ({
@@ -25,6 +25,7 @@ const items: MenuProps['items'] = [
   label: item.name,
   link: item.link
 }));
+
 
 const AdminLayout = (props: any) => {
    const {

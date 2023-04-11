@@ -1,13 +1,25 @@
 import React, { useState } from "react";
-import { Button, Checkbox, Form, Input } from "antd";
+import { Button, Checkbox, Form, Input, notification } from "antd";
 import { IRegister } from "../../types/user";
 import { useForm } from "react-hook-form";
-const Register = (props:IRegister) => {
-  console.log(props);
-  const onSubmit = (values)=>{ 
-    props.onAdd(values)
-  }
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { register } from "../../api/auth";
 
+const Register = () => {
+  const navigate = useNavigate();
+
+  const onSubmit = async (values: IRegister) => {
+    try {
+      await register(values);
+      navigate("/login");
+    } catch (error: any) {
+      console.log(error);
+      notification.error({
+        message: error?.response?.data?.message || error.message,
+      });
+    }
+  };
 
   return (
     <div>
@@ -66,8 +78,8 @@ const Register = (props:IRegister) => {
                   return Promise.resolve();
                 }
                 return Promise.reject(new Error("Mật khẩu không khớp!"));
-              }
-            })
+              },
+            }),
           ]}
         >
           <Input.Password />

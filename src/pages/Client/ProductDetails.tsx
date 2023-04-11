@@ -1,10 +1,11 @@
 import React from 'react'
 
-type Props = {}
-
-const ProductDetails = (props: Props) => {
+const ProductDetails = (props) => {
   return (
-    <div>ProductDetails</div>
+      <div style={{display: "grid", gridColumn: "span 2 / span 2"}}>
+        <div>aside</div>
+        <div>main</div>
+      </div>
   )
 }
 

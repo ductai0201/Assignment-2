@@ -8,4 +8,5 @@ export interface IRegister{
     email: string,
     password: string|number,
     confirmPassword?: string|number
+    
 }
